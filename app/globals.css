@@ -4,9 +4,9 @@
   --panel-2: #12151d;
   --line: rgba(255, 255, 255, 0.07);
   --line-strong: rgba(255, 255, 255, 0.14);
-  --text: #e7e9f0;
-  --dim: #767d92;
-  --dim-2: #4d5468;
+  --text: #eceef5;
+  --dim: #a2a9be;
+  --dim-2: #838aa0;
   --accent: #7c5cff;
   --accent-dim: rgba(124, 92, 255, 0.14);
   --green: #2ad572;
@@ -23,8 +23,8 @@ html, body {
   padding: 0;
   background: var(--bg);
   color: var(--text);
-  font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 13px;
+  font-family: var(--font-sans), system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-size: 13.5px;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -37,6 +37,37 @@ body {
 }
 
 button { font: inherit; color: inherit; cursor: pointer; }
+
+/* Numbers keep the terminal feel; words get a readable sans. */
+.clock,
+.countdown,
+.card-time,
+.side .sc,
+.tile-v,
+.detail-score .num,
+.stat-row .v,
+.event .min,
+.signal-foot,
+.standings td,
+.chip strong {
+  font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+.standings td.team { font-family: inherit; }
+
+/* Uppercase micro-labels need weight to hold up at small sizes. */
+.panel-title,
+.tile-l,
+.kickoff-label,
+.card-top,
+.chip,
+.btn,
+.legend span,
+.standings thead th,
+.stat-row .lbl,
+.panel-note {
+  font-weight: 500;
+}
+
 
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
@@ -90,8 +121,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
 }
 
 .panel-title {
-  font-size: 10px;
-  letter-spacing: 0.16em;
+  font-size: 11px;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--dim);
   display: flex;
@@ -108,8 +139,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
 }
 
 .panel-note {
-  font-size: 10px;
-  letter-spacing: 0.08em;
+  font-size: 11px;
+  letter-spacing: 0.04em;
   color: var(--dim-2);
   text-transform: uppercase;
 }
@@ -138,8 +169,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .brand-mark span { color: var(--accent); }
 
 .brand-sub {
-  font-size: 10px;
-  letter-spacing: 0.18em;
+  font-size: 11px;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--dim-2);
   white-space: nowrap;
@@ -155,8 +186,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
   border: 1px solid var(--line);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.025);
-  font-size: 10.5px;
-  letter-spacing: 0.1em;
+  font-size: 11.5px;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
   color: var(--dim);
   white-space: nowrap;
@@ -199,8 +230,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
   border-radius: 999px;
   border: 1px solid var(--line-strong);
   background: rgba(255, 255, 255, 0.04);
-  font-size: 10.5px;
-  letter-spacing: 0.12em;
+  font-size: 11.5px;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--text);
   transition: border-color 0.15s, background 0.15s;
@@ -228,8 +259,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
 }
 
 .kickoff-label {
-  font-size: 10px;
-  letter-spacing: 0.2em;
+  font-size: 11px;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--accent);
 }
@@ -241,7 +272,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
   font-size: 14px;
   min-width: 0;
 }
-.kickoff-teams .vs { color: var(--dim-2); font-size: 11px; }
+.kickoff-teams .vs { color: var(--dim-2); font-size: 12px; }
 .kickoff-teams img { width: 18px; height: 18px; object-fit: contain; }
 
 .countdown {
@@ -254,8 +285,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
   color: #fff;
 }
 .countdown small {
-  font-size: 9px;
-  letter-spacing: 0.14em;
+  font-size: 10.5px;
+  letter-spacing: 0.07em;
   color: var(--dim-2);
   text-transform: uppercase;
 }
@@ -304,8 +335,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 9.5px;
-  letter-spacing: 0.13em;
+  font-size: 11px;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
   color: var(--dim-2);
 }
@@ -317,7 +348,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
   display: flex;
   align-items: center;
   gap: 7px;
-  font-size: 12px;
+  font-size: 13px;
   min-width: 0;
 }
 .side img { width: 16px; height: 16px; flex: none; object-fit: contain; }
@@ -332,8 +363,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .side.faded .sc { color: var(--dim); font-weight: 400; }
 
 .card-time {
-  font-size: 10.5px;
-  letter-spacing: 0.1em;
+  font-size: 11.5px;
+  letter-spacing: 0.05em;
   color: var(--dim);
   font-variant-numeric: tabular-nums;
 }
@@ -341,8 +372,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .rail-empty {
   padding: 22px 14px;
   color: var(--dim-2);
-  font-size: 11px;
-  letter-spacing: 0.1em;
+  font-size: 12px;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
 }
 
@@ -361,8 +392,8 @@ table.standings {
   top: 0;
   z-index: 1;
   background: var(--panel);
-  font-size: 9px;
-  letter-spacing: 0.13em;
+  font-size: 10.5px;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
   color: var(--dim-2);
   font-weight: 500;
@@ -375,7 +406,7 @@ table.standings {
 .standings td {
   padding: 0 6px;
   height: 27px;
-  font-size: 11.5px;
+  font-size: 12.5px;
   text-align: right;
   color: var(--dim);
   border-bottom: 1px solid rgba(255, 255, 255, 0.035);
@@ -428,8 +459,8 @@ table.standings {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 9px;
-  letter-spacing: 0.1em;
+  font-size: 10.5px;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
   color: var(--dim);
 }
@@ -475,8 +506,8 @@ table.standings {
 .poss-legend {
   display: flex;
   justify-content: space-between;
-  font-size: 9.5px;
-  letter-spacing: 0.12em;
+  font-size: 11px;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--dim);
 }
@@ -487,19 +518,19 @@ table.standings {
   grid-template-columns: 68px 1fr 68px;
   align-items: center;
   gap: 10px;
-  font-size: 11px;
+  font-size: 12px;
 }
 .stat-row .lbl {
   text-align: center;
-  font-size: 9px;
-  letter-spacing: 0.1em;
+  font-size: 10.5px;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
   color: var(--dim-2);
 }
 .stat-row .v {
   font-variant-numeric: tabular-nums;
   color: var(--text);
-  font-size: 10.5px;
+  font-size: 11.5px;
   white-space: nowrap;
 }
 .stat-row .v.r { text-align: right; }
@@ -510,11 +541,11 @@ table.standings {
   grid-template-columns: 34px 16px 1fr;
   gap: 9px;
   align-items: center;
-  font-size: 11px;
+  font-size: 12px;
   color: var(--dim);
   padding: 3px 0;
 }
-.event .min { color: var(--dim-2); font-variant-numeric: tabular-nums; font-size: 10px; }
+.event .min { color: var(--dim-2); font-variant-numeric: tabular-nums; font-size: 11px; }
 .event.home .nm { color: var(--text); }
 .event .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .event .ic { text-align: center; }
@@ -526,27 +557,86 @@ table.standings {
   flex: none;
 }
 .tile {
-  padding: 12px 14px;
+  padding: 11px 14px 12px;
   border-right: 1px solid var(--line);
   min-width: 0;
+  display: grid;
+  gap: 3px;
+  align-content: start;
+  animation: tile-in 0.45s ease-out backwards;
 }
 .tile:last-child { border-right: none; }
-.tile-v {
-  font-size: 18px;
-  color: #fff;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.02em;
+.tile:nth-child(2) { animation-delay: 0.05s; }
+.tile:nth-child(3) { animation-delay: 0.1s; }
+.tile:nth-child(4) { animation-delay: 0.15s; }
+@keyframes tile-in { from { opacity: 0; transform: translateY(5px); } }
+
+.tile-l {
+  font-size: 10px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--dim-2);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.tile-l {
-  margin-top: 3px;
-  font-size: 9px;
-  letter-spacing: 0.14em;
+.tile-v {
+  font-size: 20px;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+  line-height: 1.15;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tile-v.skeleton { color: var(--dim-2); }
+.tile-u {
+  font-size: 10.5px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-left: 5px;
+}
+.tile-who {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  color: var(--dim);
+  min-width: 0;
+}
+.tile-who img { width: 13px; height: 13px; flex: none; object-fit: contain; }
+.tile-who .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ref-flag {
+  margin-left: auto;
+  font-size: 10px;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--dim-2);
+  white-space: nowrap;
 }
+.ref-flag.hot { color: var(--amber); }
+
+.pager {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  padding: 9px 0 2px;
+  flex: none;
+}
+.pip {
+  width: 14px;
+  height: 3px;
+  border-radius: 2px;
+  border: none;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.14);
+  transition: background 0.2s, width 0.2s;
+}
+.pip.on { background: var(--accent); width: 22px; }
+.pip:hover { background: rgba(255, 255, 255, 0.3); }
+.pip.on:hover { background: var(--accent); }
 
 .signal {
   flex: 1 1 auto;
@@ -572,8 +662,8 @@ table.standings {
   display: flex;
   justify-content: space-between;
   padding: 0 14px 11px;
-  font-size: 9px;
-  letter-spacing: 0.12em;
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--dim-2);
   flex: none;
@@ -587,8 +677,8 @@ table.standings {
   text-align: center;
   padding: 20px;
   color: var(--dim-2);
-  font-size: 11px;
-  letter-spacing: 0.1em;
+  font-size: 12px;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
 }
 
@@ -599,8 +689,8 @@ table.standings {
   gap: 14px;
   text-align: center;
   color: var(--dim);
-  font-size: 11px;
-  letter-spacing: 0.22em;
+  font-size: 12px;
+  letter-spacing: 0.11em;
   text-transform: uppercase;
 }
 .boot .bars { display: flex; gap: 4px; justify-content: center; height: 26px; align-items: flex-end; }
@@ -620,7 +710,7 @@ table.standings {
   color: var(--red);
   letter-spacing: 0.06em;
   text-transform: none;
-  font-size: 11px;
+  font-size: 12px;
   max-width: 30ch;
 }
 
@@ -648,12 +738,12 @@ table.standings {
   .header { gap: 9px; padding: 10px; }
   .brand-sub { display: none; }
   .clock { font-size: 13px; }
-  .chip { font-size: 9.5px; padding: 4px 8px; }
+  .chip { font-size: 11px; padding: 4px 8px; }
   .kickoff { gap: 10px; padding: 10px 12px; }
-  .kickoff-teams { font-size: 12.5px; width: 100%; }
+  .kickoff-teams { font-size: 13px; width: 100%; }
   .countdown { font-size: 17px; }
   .card { width: 152px; }
-  .card-top { gap: 8px; font-size: 8.5px; letter-spacing: 0.1em; }
+  .card-top { gap: 8px; font-size: 10px; letter-spacing: 0.05em; }
   .brand-mark { font-size: 13.5px; }
   .panel-head { padding: 8px 10px; }
   .panel-head .panel-note { display: none; }
@@ -666,6 +756,10 @@ table.standings {
   .detail-score { gap: 12px; }
   .detail-score .num { font-size: 22px; }
   .stat-row { grid-template-columns: 58px 1fr 58px; }
+  /* End labels crowd the centre caption at this width. */
+  .signal-foot span:first-child,
+  .signal-foot span:last-child { display: none; }
+  .signal-foot { justify-content: center; }
 }
 
 @media (prefers-reduced-motion: reduce) {
