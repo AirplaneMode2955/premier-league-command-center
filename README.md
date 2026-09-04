@@ -61,3 +61,16 @@ npm run dev
 ```
 
 Then open http://localhost:3000.
+
+## Deployment
+
+Connected to Vercel via GitHub — pushes to `main` deploy automatically.
+
+| | |
+| --- | --- |
+| Repo | `AirplaneMode2955/premier-league-command-center` (private) |
+| Vercel project | `plcc-live` |
+| Production | https://plcc-live.vercel.app |
+
+To deploy: commit and `git push`. Vercel builds from `main` and promotes to
+production. Nothing needs to be uploaded by hand.
