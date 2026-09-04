@@ -65,7 +65,7 @@ function OddityTile({ o }: { o: Oddity }) {
 function RefTile({ r }: { r: Referee }) {
   const hot = r.leagueAvg != null && r.perMatch > r.leagueAvg;
   return (
-    <div className="tile">
+    <div className="tile is-ref">
       <div className="tile-l">Card-happiest referee</div>
       <div className="tile-v">
         <span className="n">{r.perMatch.toFixed(1)}</span>
@@ -83,9 +83,77 @@ function RefTile({ r }: { r: Referee }) {
 }
 
 /**
- * The league's odd corners: rotating leaderboards over a goal clock showing
- * when goals actually get scored. Doubles as the resting state of the pane
- * the match-detail panel takes over.
+ * Goal clock. One row per five-minute bucket, running down rather than
+ * across, so it reads as a standing widget beside the cards instead of a
+ * full-width strip under them.
+ */
+/**
+ * Merge the eighteen five-minute buckets into nine ten-minute ones (stoppage
+ * time stays its own row). Nineteen labelled rows need ~250px; when the
+ * widget is shorter than that they'd be unreadable slivers.
+ */
+function coarsen(clock: { label: string; goals: number }[]) {
+  const five = clock.filter((b) => b.label !== '90+');
+  const stoppage = clock.find((b) => b.label === '90+');
+  const out: { label: string; goals: number }[] = [];
+  for (let i = 0; i < five.length; i += 2) {
+    const a = five[i];
+    const b = five[i + 1];
+    const start = a.label.split('-')[0];
+    const end = (b ?? a).label.split('-')[1];
+    out.push({ label: `${start}-${end}`, goals: a.goals + (b?.goals ?? 0) });
+  }
+  if (stoppage) out.push(stoppage);
+  return out;
+}
+
+function GoalClock({
+  clock,
+  total,
+  compact,
+}: {
+  clock: { label: string; goals: number }[];
+  total: number;
+  compact: boolean;
+}) {
+  const rows = compact ? coarsen(clock) : clock;
+  const peak = Math.max(1, ...rows.map((b) => b.goals));
+  const busiest = rows.find((b) => b.goals === peak);
+  return (
+    <aside className="clockw">
+      <div className="clockw-head">
+        <span className="clockw-t">Goal clock</span>
+        <span className="clockw-n">{total}</span>
+      </div>
+      <div className="clockw-rows">
+        {rows.map((b) => (
+          <div
+            className={`crow${b.goals === peak && b.goals > 0 ? ' pk' : ''}`}
+            key={b.label}
+            title={`${b.label} min — ${b.goals} goal${b.goals === 1 ? '' : 's'}`}
+          >
+            {/* Label by the bucket's closing minute: 5, 10 ... 90, 90+.
+                Half the width of "41-45", so the type can be bigger. */}
+            <span className="cmin">
+              {b.label === '90+' ? '90+' : b.label.split('-')[1]}
+            </span>
+            <span className="ctrack">
+              <i style={{ width: `${b.goals ? Math.max(6, (b.goals / peak) * 100) : 0}%` }} />
+            </span>
+          </div>
+        ))}
+      </div>
+      <div className="clockw-foot">
+        {busiest ? `Busiest ${busiest.label}'` : 'Building…'}
+      </div>
+    </aside>
+  );
+}
+
+/**
+ * The league's odd corners: rotating stat cards with the goal clock alongside
+ * as a standing widget. Doubles as the resting state of the pane the
+ * match-detail panel takes over.
  */
 export default function SeasonSignal({ data }: { data: Dashboard }) {
   const [payload, setPayload] = useState<Payload | null>(null);
@@ -96,11 +164,18 @@ export default function SeasonSignal({ data }: { data: Dashboard }) {
   const [slots, setSlots] = useState(4);
 
   useEffect(() => {
-    const mq = window.matchMedia('(min-height: 1040px) and (min-width: 1180px)');
-    const apply = () => setSlots(mq.matches ? 8 : 4);
+    // Card count follows available height. Showing four clipped cards is
+    // worse than showing two whole ones.
+    const huge = window.matchMedia('(min-height: 1300px) and (min-width: 1800px)');
+    const tall = window.matchMedia('(min-height: 1040px) and (min-width: 1180px)');
+    const roomy = window.matchMedia('(min-height: 820px)');
+    const apply = () =>
+      setSlots(huge.matches ? 12 : tall.matches ? 8 : roomy.matches ? 4 : 2);
     apply();
-    mq.addEventListener('change', apply);
-    return () => mq.removeEventListener('change', apply);
+    for (const mq of [huge, tall, roomy]) mq.addEventListener('change', apply);
+    return () => {
+      for (const mq of [huge, tall, roomy]) mq.removeEventListener('change', apply);
+    };
   }, []);
 
   useEffect(() => {
@@ -197,72 +272,73 @@ export default function SeasonSignal({ data }: { data: Dashboard }) {
         </div>
       </div>
 
-      <div
-        className="strip"
-        onMouseEnter={() => setPaused(true)}
-        onMouseLeave={() => setPaused(false)}
-        onFocusCapture={() => setPaused(true)}
-        onBlurCapture={() => setPaused(false)}
-      >
-        <button className="nav prev" type="button" onClick={() => go(-1)} aria-label="Previous stats">
-          ‹
-        </button>
+      <div className="odd-body">
+        <div
+          className="odd-left"
+          onMouseEnter={() => setPaused(true)}
+          onMouseLeave={() => setPaused(false)}
+          onFocusCapture={() => setPaused(true)}
+          onBlurCapture={() => setPaused(false)}
+        >
+          <div className="strip">
+            <button
+              className="nav prev"
+              type="button"
+              onClick={() => go(-1)}
+              aria-label="Previous stats"
+            >
+              ‹
+            </button>
 
-        {!payload ? (
-          <div className={`tiles${slots > 4 ? ' rows-2' : ''}`}>
-            {Array.from({ length: slots }, (_, i) => (
-              <div className="tile" key={i}>
-                <div className="tile-l">{failed ? 'Unavailable' : 'Loading…'}</div>
-                <div className="tile-v skeleton">
-                  <span className="n">—</span>
-                </div>
+            {!payload ? (
+              <div className="tiles">
+                {Array.from({ length: slots }, (_, i) => (
+                  <div className="tile" key={i}>
+                    <div className="tile-l">{failed ? 'Unavailable' : 'Loading…'}</div>
+                    <div className="tile-v skeleton">
+                      <span className="n">—</span>
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        ) : (
-          <div className={`tiles${slots > 4 ? ' rows-2' : ''}`} key={page}>
-            {shown.map((c, i) =>
-              c.kind === 'ref' ? (
-                <RefTile r={c.r} key={`ref-${c.r.id}-${i}`} />
-              ) : (
-                <OddityTile o={c.o} key={`${c.o.key}-${i}`} />
-              ),
+            ) : (
+              <div className="tiles" key={page}>
+                {shown.map((c, i) =>
+                  c.kind === 'ref' ? (
+                    <RefTile r={c.r} key={`ref-${c.r.id}-${i}`} />
+                  ) : (
+                    <OddityTile o={c.o} key={`${c.o.key}-${i}`} />
+                  ),
+                )}
+              </div>
             )}
+
+            <button
+              className="nav next"
+              type="button"
+              onClick={() => go(1)}
+              aria-label="Next stats"
+            >
+              ›
+            </button>
           </div>
+
+          <div className={`progress${paused ? ' paused' : ''}`}>
+            <i style={{ width: `${((page + 1) / pages) * 100}%` }} />
+          </div>
+        </div>
+
+        {clock.length > 0 && totalGoals > 0 ? (
+          <GoalClock clock={clock} total={totalGoals} compact={slots <= 2} />
+        ) : (
+          <aside className="clockw">
+            <div className="clockw-head">
+              <span className="clockw-t">Goal clock</span>
+            </div>
+            <div className="empty-state">Building…</div>
+          </aside>
         )}
-
-        <button className="nav next" type="button" onClick={() => go(1)} aria-label="Next stats">
-          ›
-        </button>
       </div>
-
-      <div className={`progress${paused ? ' paused' : ''}`}>
-        <i style={{ width: `${((page + 1) / pages) * 100}%` }} />
-      </div>
-
-      {clock.length > 0 && totalGoals > 0 ? (
-        <>
-          <div className="signal">
-            {clock.map((b) => (
-              <i
-                key={b.label}
-                className={b.goals === peak ? 'cur' : ''}
-                style={{ height: `${Math.max(6, (b.goals / peak) * 100)}%` }}
-                title={`${b.label} min — ${b.goals} goals`}
-              />
-            ))}
-          </div>
-          <div className="signal-foot">
-            <span>1&apos; kickoff</span>
-            <span>
-              Goal clock · {totalGoals} goals · busiest {clock.find((b) => b.goals === peak)?.label}&apos;
-            </span>
-            <span>90+&apos; stoppage</span>
-          </div>
-        </>
-      ) : (
-        <div className="empty-state">Goal clock building…</div>
-      )}
     </section>
   );
 }

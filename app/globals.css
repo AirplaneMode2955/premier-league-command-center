@@ -1,35 +1,48 @@
 :root {
-  --bg: #08090c;
-  --panel: #0d0f14;
-  --panel-2: #12151d;
-  --line: rgba(255, 255, 255, 0.08);
-  --line-strong: rgba(255, 255, 255, 0.16);
-  --text: #eef0f6;
-  --dim: #aab1c6;
-  --dim-2: #8b92a8;
-  --accent: #7c5cff;
-  --accent-dim: rgba(124, 92, 255, 0.14);
+  /*
+   * Cool graphite base with a single ice-blue accent. Warm colours are
+   * reserved for state so they always mean something: red = live,
+   * amber = stale. Table zone colours come from the API itself.
+   */
+  --bg: #080a0e;
+  --panel: #0e1117;
+  --panel-2: #141922;
+  --card: #171d27;
+  --card-hi: #1d2531;
+
+  --line: rgba(255, 255, 255, 0.075);
+  --line-2: rgba(255, 255, 255, 0.15);
+
+  --text: #eef1f6;
+  --dim: #a8b2c2;
+  --dim-2: #7f8b9c;
+
+  --accent: #4dd8ff;
+  --accent-2: #6f8cff;
+  --accent-dim: rgba(77, 216, 255, 0.13);
+
+  --live: #ff5566;
+  --amber: #ffc247;
   --green: #2ad572;
-  --blue: #3f7dff;
-  --red: #ff4646;
-  --amber: #ffb020;
-  --radius: 10px;
+  --red: #ff5566;
+
+  --radius: 12px;
+  --radius-sm: 9px;
 
   /*
    * Type scales with viewport HEIGHT, because height is what constrains this
-   * layout — everything has to fit one screen without scrolling. On a 27"
-   * monitor that means the whole dashboard grows with the screen instead of
-   * sitting tiny in the middle of it. The clamp floors keep it legible on a
-   * short laptop viewport.
+   * layout - everything has to fit one screen without scrolling. On a large
+   * monitor the dashboard grows with the screen instead of sitting small in
+   * the middle of it. The clamp floors keep it legible on a short viewport.
    */
-  --t-micro: clamp(12px, 1.02vh, 17px);   /* uppercase labels */
-  --t-sm:    clamp(13.5px, 1.15vh, 19px); /* secondary text */
-  --t-body:  clamp(15px, 1.3vh, 21px);    /* names, table cells */
-  --t-lead:  clamp(17.5px, 1.55vh, 26px); /* brand, clock, kickoff */
-  --t-big:   clamp(24px, 2.3vh, 40px);    /* tile values, countdown */
-  --t-huge:  clamp(28px, 2.7vh, 48px);    /* match detail score */
+  --t-micro: clamp(12px, 1.02vh, 17px);
+  --t-sm:    clamp(13.5px, 1.15vh, 19px);
+  --t-body:  clamp(15px, 1.3vh, 21px);
+  --t-lead:  clamp(17.5px, 1.55vh, 26px);
+  --t-big:   clamp(24px, 2.3vh, 40px);
+  --t-huge:  clamp(28px, 2.7vh, 48px);
 
-  --row-h: clamp(29px, 3.1vh, 52px);      /* standings row */
+  --row-h: clamp(29px, 3.1vh, 52px);
 }
 
 * { box-sizing: border-box; }
@@ -48,8 +61,8 @@ body {
   height: 100dvh;
   overflow: hidden;
   background-image:
-    radial-gradient(900px 500px at 12% -10%, rgba(124, 92, 255, 0.13), transparent 70%),
-    radial-gradient(700px 420px at 92% 0%, rgba(42, 213, 114, 0.06), transparent 70%);
+    radial-gradient(1000px 520px at 8% -12%, rgba(77, 216, 255, 0.09), transparent 68%),
+    radial-gradient(760px 440px at 96% 4%, rgba(111, 140, 255, 0.07), transparent 70%);
 }
 
 button { font: inherit; color: inherit; cursor: pointer; }
@@ -63,14 +76,13 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .detail-score .num,
 .stat-row .v,
 .event .min,
-.signal-foot,
+.cmin,
 .standings td,
 .chip strong {
   font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 .standings td.team { font-family: inherit; }
 
-/* Uppercase micro-labels need weight to hold up at small sizes. */
 .panel-title,
 .tile-l,
 .kickoff-label,
@@ -80,13 +92,14 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .legend span,
 .standings thead th,
 .stat-row .lbl,
+.clockw-t,
 .panel-note {
   font-weight: 500;
 }
 
 ::-webkit-scrollbar { width: 7px; height: 7px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.16); border-radius: 99px; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 99px; }
 
 /* ---------------- shell ---------------- */
 
@@ -137,7 +150,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 .panel-title {
   font-size: var(--t-micro);
-  letter-spacing: 0.08em;
+  letter-spacing: 0.09em;
   text-transform: uppercase;
   color: var(--dim);
   display: flex;
@@ -150,7 +163,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
   width: 6px; height: 6px;
   border-radius: 2px;
   background: var(--accent);
-  box-shadow: 0 0 10px var(--accent);
+  box-shadow: 0 0 9px rgba(77, 216, 255, 0.7);
   flex: none;
 }
 
@@ -186,7 +199,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 .brand-sub {
   font-size: var(--t-micro);
-  letter-spacing: 0.08em;
+  letter-spacing: 0.09em;
   text-transform: uppercase;
   color: var(--dim-2);
   white-space: nowrap;
@@ -201,7 +214,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
   padding: 7px 13px;
   border: 1px solid var(--line);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.035);
   font-size: var(--t-sm);
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -210,15 +223,19 @@ button { font: inherit; color: inherit; cursor: pointer; }
 }
 
 .chip strong { color: var(--text); font-weight: 600; letter-spacing: 0.04em; }
-.chip-accent { border-color: rgba(124, 92, 255, 0.45); background: var(--accent-dim); color: #cdc2ff; }
+.chip-accent {
+  border-color: rgba(77, 216, 255, 0.45);
+  background: var(--accent-dim);
+  color: #bdeeff;
+}
 .chip-accent strong { color: #fff; }
 
 .chip-live {
-  border-color: rgba(255, 70, 70, 0.5);
-  background: rgba(255, 70, 70, 0.13);
-  color: #ffa8a8;
+  border-color: rgba(255, 85, 102, 0.5);
+  background: rgba(255, 85, 102, 0.13);
+  color: #ffb0b8;
 }
-.chip-stale { border-color: rgba(255, 176, 32, 0.45); background: rgba(255,176,32,0.11); color: var(--amber); }
+.chip-stale { border-color: rgba(255, 194, 71, 0.45); background: rgba(255,194,71,0.11); color: var(--amber); }
 
 .dot {
   width: 7px; height: 7px; border-radius: 50%;
@@ -245,7 +262,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
   gap: 8px;
   padding: 9px 15px;
   border-radius: 999px;
-  border: 1px solid var(--line-strong);
+  border: 1px solid var(--line-2);
   background: rgba(255, 255, 255, 0.05);
   font-size: var(--t-sm);
   letter-spacing: 0.06em;
@@ -272,7 +289,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
   border-left: 3px solid var(--accent);
   border-radius: var(--radius);
   background:
-    linear-gradient(90deg, rgba(124, 92, 255, 0.11), rgba(124, 92, 255, 0) 45%),
+    linear-gradient(90deg, rgba(77, 216, 255, 0.1), rgba(77, 216, 255, 0) 42%),
     var(--panel);
   flex-wrap: wrap;
 }
@@ -300,7 +317,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
   gap: 8px;
   font-variant-numeric: tabular-nums;
   font-size: var(--t-big);
-  letter-spacing: 0.04em;
+  letter-spacing: 0.03em;
   color: #fff;
 }
 .countdown small {
@@ -310,7 +327,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
   text-transform: uppercase;
 }
 
-/* ---------------- rails ---------------- */
+/* ---------------- match rails ---------------- */
 
 .rail {
   display: flex;
@@ -326,25 +343,25 @@ button { font: inherit; color: inherit; cursor: pointer; }
   width: clamp(180px, 13.5vw, 232px);
   padding: 12px 13px;
   border: 1px solid var(--line);
-  border-radius: 9px;
-  background: var(--panel-2);
+  border-radius: var(--radius-sm);
+  background: var(--card);
   display: grid;
   gap: 9px;
   text-align: left;
   position: relative;
   overflow: hidden;
-  transition: border-color 0.15s, transform 0.15s;
+  transition: border-color 0.15s, transform 0.15s, background 0.15s;
 }
-.card:hover { border-color: var(--line-strong); transform: translateY(-1px); }
+.card:hover { border-color: var(--line-2); background: var(--card-hi); transform: translateY(-1px); }
 .card.clickable:hover { border-color: var(--accent); }
-.card.selected { border-color: var(--accent); background: rgba(124, 92, 255, 0.1); }
+.card.selected { border-color: var(--accent); background: rgba(77, 216, 255, 0.09); }
 
-.card.live { border-color: rgba(255, 70, 70, 0.45); }
+.card.live { border-color: rgba(255, 85, 102, 0.45); }
 .card.live::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(120px 60px at 100% 0%, rgba(255, 70, 70, 0.16), transparent 70%);
+  background: radial-gradient(120px 60px at 100% 0%, rgba(255, 85, 102, 0.16), transparent 70%);
   pointer-events: none;
   animation: breathe 2.4s ease-in-out infinite;
 }
@@ -361,7 +378,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
   color: var(--dim-2);
 }
 .card-top > span { white-space: nowrap; }
-.card-top .live-tag { color: #ff8f8f; display: inline-flex; align-items: center; gap: 6px; }
+.card-top .live-tag { color: #ff9aa4; display: inline-flex; align-items: center; gap: 6px; }
 .card-top .ft-tag { color: var(--dim); }
 
 .side {
@@ -432,7 +449,7 @@ table.standings {
   border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 }
 .standings tr:last-child td { border-bottom: none; }
-.standings tbody tr:hover td { background: rgba(255, 255, 255, 0.035); }
+.standings tbody tr:hover td { background: rgba(255, 255, 255, 0.04); }
 
 .standings td.pos {
   text-align: left;
@@ -465,7 +482,7 @@ table.standings {
 }
 .standings td.pts { color: #fff; font-weight: 600; padding-right: 14px; }
 .standings td.gd.pos-v { color: var(--green); }
-.standings td.gd.neg-v { color: #ff8f8f; }
+.standings td.gd.neg-v { color: #ff9aa4; }
 
 .legend {
   display: flex;
@@ -509,7 +526,7 @@ table.standings {
 .detail-score img { width: 1.6em; height: 1.6em; object-fit: contain; }
 .detail-score .num {
   font-size: var(--t-huge);
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
   font-variant-numeric: tabular-nums;
   color: #fff;
 }
@@ -570,23 +587,33 @@ table.standings {
 .event .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .event .ic { text-align: center; }
 
-/* ---------------- oddities strip ---------------- */
+/* ---------------- oddities: cards + clock widget ---------------- */
 
-/*
- * The strip takes the pane's spare height (the goal clock below is fixed and
- * deliberately compact), so the tiles breathe and their numbers can be large.
- */
+/* Cards on the left, goal clock as a portrait widget on the right. */
+.odd-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  align-items: stretch;
+}
+
+.odd-left {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
 .strip {
   flex: 1 1 auto;
   min-height: 0;
   display: flex;
   align-items: stretch;
-  border-bottom: 1px solid var(--line);
 }
 
 .nav {
   flex: none;
-  width: clamp(40px, 3vw, 56px);
+  width: clamp(38px, 2.6vw, 50px);
   display: grid;
   place-items: center;
   border: none;
@@ -598,27 +625,45 @@ table.standings {
 }
 .nav:hover { background: rgba(255, 255, 255, 0.05); color: var(--text); }
 .nav:active { background: var(--accent-dim); color: #fff; }
-.nav.prev { border-right: 1px solid var(--line); }
-.nav.next { border-left: 1px solid var(--line); }
 
+/* Cards are real surfaces now, not cells divided by hairlines. */
 .tiles {
   flex: 1 1 auto;
   min-width: 0;
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  /* Rows derive from the card count, so any number of slots fills evenly. */
+  grid-auto-rows: minmax(0, 1fr);
+  gap: 10px;
+  padding: 4px 2px 10px;
 }
 
 .tile {
-  padding: 12px 16px;
-  border-right: 1px solid var(--line);
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 11px 14px;
   min-width: 0;
   display: grid;
-  gap: 6px;
+  gap: 5px;
   align-content: center;
+  position: relative;
+  overflow: hidden;
   animation: tile-in 0.4s ease-out;
+  opacity: 1;
 }
-.tile { opacity: 1; }
-.tile:last-child { border-right: none; }
+/* A hairline of accent on the leading edge, so a card reads as a card. */
+.tile::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 12%; bottom: 12%;
+  width: 2px;
+  border-radius: 0 2px 2px 0;
+  background: linear-gradient(180deg, var(--accent), var(--accent-2));
+  opacity: 0.75;
+}
+.tile.is-ref::before { background: var(--amber); }
+
 .tile:nth-child(2) { animation-delay: 0.04s; }
 .tile:nth-child(3) { animation-delay: 0.08s; }
 .tile:nth-child(4) { animation-delay: 0.12s; }
@@ -626,12 +671,17 @@ table.standings {
 .tile:nth-child(6) { animation-delay: 0.2s; }
 .tile:nth-child(7) { animation-delay: 0.24s; }
 .tile:nth-child(8) { animation-delay: 0.28s; }
+/*
+ * Transform only. An earlier version faded in from opacity 0 with a
+ * `backwards` fill, which meant a stalled animation left tiles permanently
+ * invisible. Entry animation must never decide whether content is readable.
+ */
 @keyframes tile-in { from { transform: translateY(6px); } }
 
-/* Tall screens show eight stats at once rather than four in a lot of air. */
-.tiles.rows-2 { grid-template-rows: repeat(2, minmax(0, 1fr)); }
-.tiles.rows-2 .tile:nth-child(4n) { border-right: none; }
-.tiles.rows-2 .tile:nth-child(-n + 4) { border-bottom: 1px solid var(--line); }
+/* On a wide screen two columns leaves each card far wider than its content. */
+@media (min-width: 1800px) {
+  .tiles { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
 
 .tile-l {
   font-size: var(--t-micro);
@@ -646,8 +696,7 @@ table.standings {
   font-size: var(--t-big);
   color: #fff;
   font-variant-numeric: tabular-nums;
-  letter-spacing: 0;
-  line-height: 1.1;
+  line-height: 1.08;
   display: flex;
   align-items: baseline;
   gap: 7px;
@@ -683,51 +732,104 @@ table.standings {
 }
 .ref-flag.hot { color: var(--amber); }
 
-/* Auto-advance progress; doubles as the page indicator. */
 .progress {
   height: 2px;
   background: rgba(255, 255, 255, 0.07);
   flex: none;
   overflow: hidden;
+  margin: 0 12px 10px;
+  border-radius: 99px;
 }
 .progress i {
   display: block;
   height: 100%;
-  background: var(--accent);
-  box-shadow: 0 0 8px var(--accent);
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
   transition: width 0.35s ease;
 }
-.progress.paused i { background: var(--dim-2); box-shadow: none; }
+.progress.paused i { background: var(--dim-2); }
 
-/* ---------------- goal clock ---------------- */
-
-.signal {
-  flex: 0 1 auto;
-  height: clamp(72px, 9.5vh, 190px);
+/* The goal clock: tall and narrow, one row per five-minute bucket. */
+.clockw {
+  flex: none;
+  width: clamp(150px, 12vw, 200px);
+  border-left: 1px solid var(--line);
   display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  gap: 4px;
-  padding: 12px 16px 8px;
+  flex-direction: column;
+  min-height: 0;
+  background: rgba(255, 255, 255, 0.012);
 }
-.signal i {
-  flex: 1 1 0;
-  min-width: 2px;
-  max-width: 26px;
-  border-radius: 2px 2px 0 0;
-  background: linear-gradient(180deg, var(--accent), rgba(124, 92, 255, 0.2));
-}
-.signal i.cur { background: linear-gradient(180deg, var(--green), rgba(42, 213, 114, 0.22)); }
 
-.signal-foot {
+.clockw-head {
   display: flex;
+  align-items: baseline;
   justify-content: space-between;
-  padding: 0 16px 11px;
+  gap: 8px;
+  padding: 10px 12px 8px;
+  flex: none;
+}
+.clockw-t {
   font-size: var(--t-micro);
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+.clockw-n {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: var(--t-sm);
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+
+.clockw-rows {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  gap: 2px;
+  padding: 0 12px;
+}
+
+.crow {
+  display: grid;
+  grid-template-columns: 2.2em minmax(0, 1fr);
+  align-items: center;
+  gap: 7px;
+  min-height: 0;
+}
+.cmin {
+  font-size: clamp(10.5px, 0.95vh, 14px);
+  color: var(--dim-2);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  letter-spacing: -0.01em;
+}
+.ctrack {
+  height: clamp(5px, 0.72vh, 11px);
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 2px;
+  overflow: hidden;
+  display: block;
+}
+.ctrack i {
+  display: block;
+  height: 100%;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--accent-2), var(--accent));
+  min-width: 2px;
+}
+.crow.pk .ctrack i { background: linear-gradient(90deg, var(--green), #7bffb8); }
+.crow.pk .cmin { color: var(--green); }
+
+.clockw-foot {
+  flex: none;
+  padding: 8px 12px 11px;
+  font-size: var(--t-micro);
+  letter-spacing: 0.05em;
   text-transform: uppercase;
   color: var(--dim-2);
-  flex: none;
+  border-top: 1px solid var(--line);
+  margin-top: 6px;
 }
 
 .empty-state {
@@ -776,9 +878,9 @@ table.standings {
 
 @media (max-width: 1180px) {
   .main { grid-template-columns: minmax(0, 1fr) 340px; }
-  .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .tile:nth-child(2n) { border-right: none; }
-  .tile:nth-child(-n + 2) { border-bottom: 1px solid var(--line); }
+  .clockw { width: 140px; }
+  /* Drops a header row at this width; the wall clock still shows the time. */
+  .chip-synced { display: none; }
 }
 
 @media (max-width: 940px) {
@@ -799,9 +901,17 @@ table.standings {
   .col-left { grid-template-rows: auto auto auto; }
   .table-scroll { overflow: visible; }
   .detail-body { overflow: visible; }
+  .odd-body { flex-direction: column; }
   .strip { flex: none; }
   .tile { min-height: 92px; }
-  .signal { height: 130px; }
+  .clockw {
+    width: auto;
+    border-left: none;
+    border-top: 1px solid var(--line);
+  }
+  .clockw-rows { padding: 6px 12px 10px; gap: 3px; }
+  .ctrack { height: 9px; }
+  .cmin { font-size: 12px; }
 }
 
 @media (max-width: 620px) {
@@ -814,16 +924,17 @@ table.standings {
   .panel-head { padding: 9px 11px; }
   .panel-head .panel-note { display: none; }
   .panel-title { white-space: nowrap; }
-  .nav { width: 34px; font-size: 19px; }
-  .tile { padding: 11px 12px; }
+  .nav { width: 32px; font-size: 19px; }
+  .tiles { gap: 8px; padding: 4px 0 8px; }
+  .tile { padding: 10px 12px; }
+  /* Narrow cards: the unit was squeezing the number down to an ellipsis. */
+  .tile-v { flex-wrap: wrap; }
+  .tile-u { flex: 1 0 100%; margin-top: 2px; }
+  .tile-l { white-space: normal; overflow-wrap: anywhere; }
   .standings td.gp, .standings th.gp,
   .standings td.wdl, .standings th.wdl { display: none; }
   .detail-score { gap: 13px; }
   .stat-row { grid-template-columns: 5em 1fr 5em; }
-  /* End labels crowd the centre caption at this width. */
-  .signal-foot span:first-child,
-  .signal-foot span:last-child { display: none; }
-  .signal-foot { justify-content: center; }
 }
 
 @media (prefers-reduced-motion: reduce) {

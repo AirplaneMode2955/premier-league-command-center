@@ -168,7 +168,7 @@ export default function Dashboard({ leagueId }: { leagueId: string }) {
           </div>
         )}
 
-        <div className="chip">
+        <div className="chip chip-synced">
           Synced{' '}
           <strong>{syncedAt ? new Date(syncedAt).toLocaleTimeString() : '—'}</strong>
         </div>
