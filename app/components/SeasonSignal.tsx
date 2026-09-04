@@ -136,7 +136,11 @@ export default function SeasonSignal({ data }: { data: Dashboard }) {
     return () => clearInterval(t);
   }, [pages]);
 
-  const shown = cards.slice(page * VISIBLE, page * VISIBLE + VISIBLE);
+  // Wrap rather than slice: 22 cards over 4 slots would otherwise leave the
+  // last page half empty, which reads as a broken layout.
+  const shown = cards.length
+    ? Array.from({ length: VISIBLE }, (_, i) => cards[(page * VISIBLE + i) % cards.length])
+    : [];
   const clock = payload?.goalClock ?? [];
   const peak = Math.max(1, ...clock.map((b) => b.goals));
   const totalGoals = clock.reduce((n, b) => n + b.goals, 0);
@@ -165,11 +169,11 @@ export default function SeasonSignal({ data }: { data: Dashboard }) {
       ) : (
         <>
           <div className="tiles" key={page}>
-            {shown.map((c) =>
+            {shown.map((c, i) =>
               c.kind === 'ref' ? (
-                <RefTile r={c.r} key={`ref-${c.r.id}`} />
+                <RefTile r={c.r} key={`ref-${c.r.id}-${i}`} />
               ) : (
-                <OddityTile o={c.o} key={c.o.key} />
+                <OddityTile o={c.o} key={`${c.o.key}-${i}`} />
               ),
             )}
           </div>
